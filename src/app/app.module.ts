@@ -21,6 +21,12 @@ import { LoginComponent } from './login/login.component';
 import {AuthService} from './auth.service';
 import {AuthGuardService} from './auth-guard.service';
 import {UserService} from './user.service';
+import {AdminAuthGuardService} from "./admin-auth-guard.service";
+import { ProductFormComponent } from './admin/product-form/product-form.component';
+import {CategoryService} from "./category.service";
+import {FormsModule} from "@angular/forms";
+import {CustomFormsModule} from 'ng2-validation';
+import {ProductService} from "./product.service";
 
 
 @NgModule({
@@ -35,9 +41,12 @@ import {UserService} from './user.service';
     MyOrdersComponent,
     AdminProductsComponent,
     AdminOrdersComponent,
-    LoginComponent
+    LoginComponent,
+    ProductFormComponent
   ],
   imports: [
+    FormsModule,
+    CustomFormsModule,
     BrowserModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireDatabaseModule,
@@ -53,15 +62,41 @@ import {UserService} from './user.service';
       {path: 'order-success', component: OrderSuccessComponent, canActivate: [AuthGuardService]},
       {path: 'my/orders', component: MyOrdersComponent, canActivate: [AuthGuardService]},
 
-      {path: 'admin/products', component: AdminProductsComponent, canActivate: [AuthGuardService]},
-      {path: 'admin/orders', component: AdminOrdersComponent, canActivate: [AuthGuardService]},
+
+      {
+        path: 'admin/products/new',
+        component: ProductFormComponent,
+        canActivate: [AuthGuardService, AdminAuthGuardService]
+      },
+
+      {
+        path: 'admin/products/:id',
+        component: ProductFormComponent,
+        canActivate: [AuthGuardService, AdminAuthGuardService]
+      },
+
+      {
+        path: 'admin/products',
+        component: AdminProductsComponent,
+        canActivate: [AuthGuardService, AdminAuthGuardService]
+      },
+
+
+      {
+        path: 'admin/orders',
+        component: AdminOrdersComponent,
+        canActivate: [AuthGuardService, AdminAuthGuardService]
+      },
 
     ])
   ],
   providers: [
     AuthService,
     AuthGuardService,
-    UserService
+    AdminAuthGuardService,
+    UserService,
+    CategoryService,
+    ProductService
   ],
   bootstrap: [AppComponent]
 })
